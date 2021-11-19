@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combining Different Excel Workbooks’ Data into One Workbook Using VBA</title>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Playfair+Display:700,400,900,400italic,700italic,900italic|Merriweather:400,300,700,900,300italic,400italic,700italic,900italic|Anonymous+Pro:400,700,400italic,700italic|Roboto:400,700' />
+    <link rel='stylesheet' type='text/css' href='https://cdn.rawgit.com/google/code-prettify/master/styles/desert.css' />
+    <link rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' />
+
+
+    <style>
+body {
+  margin:50px 10px;
+}
+
+#blog {
+  display: block; 
+  width: auto!important; 
+  overflow: hidden; 
+} 
+
+a, a.named_anchor {
+    text-decoration: inherit;
+    font-style: inherit;
+    color: inherit;
+  }
+  
+
+
+h1 {
+    letter-spacing: -0.06em;
+    margin-bottom: 0.05em;
+    line-height: 1em;
+}
+
+.byline {
+    font: normal normal 400 1.3em;
+    margin-bottom: .8em;
+    letter-spacing: -0.04em;
+  }
+
+.pubdate {
+    font: normal normal 400 1em;
+    text-transform: uppercase;
+    margin-bottom: 1em;
+  }
+
+.pubtime:before {
+    font-family: 'FontAwesome';
+    font-size: .8em;
+    content:'\f054';
+    margin: 0em .5em;
+}
+
+hr {
+    border: 0;
+    border-bottom: 4px double;
+    height: 0.15em;
+}
+
+
+.topic {
+    font: normal normal 900 .8em;
+    text-transform: uppercase;
+    margin-bottom: 1em;
+  }
+
+#article {
+  font: normal normal 400 1em/2em;
+  line-height: 2em;
+  text-align: justify;
+}
+
+a, a:link {
+    text-decoration: none;
+    cursor: pointer;
+    color: #1b98e0;
+}  
+
+.shade {
+  background: #eee;
+  padding: 0 0.2em;
+}
+    
+h2, h3, h4, h5 { 
+    font-weight: 650; 
+    font-size: 1.25em; 
+}
+
+
+p { 
+    margin-bottom:2em; 
+    line-height: 2em;
+}
+    
+
+p:first-child:first-letter { 
+      font-weight: 900;
+      float: left; 
+      font-size: 4em; 
+      line-height: 1em; 
+      padding: 0em 0.1em 0em 0em;
+}
+
+.slideSample {
+  width: 50%;
+  margin-bottom: 2em;
+}
+
+pre {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-left: 3px solid #F2957E;
+    color: #666;
+    page-break-inside: avoid;
+    font-family: monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 1.6em;
+    max-width: 100%;
+    overflow: auto;
+    padding: 1em 1.5em;
+    display: block;
+    word-wrap: break-word;
+}
+
+pre span {
+  color: #339b4b;
+}
+@media only screen and (max-width: 768px) {
+  .slideSample {
+    width: 80%;
+  }
+}
+    </style>
+</head>
+<body>
+    
+
+
+    
+<div class="container">
+    <div id="blog">
+      <div id="title">
+        <div class="pubdate">18 November 2021<hr/></div>
+        <h1>Combining Different Excel Workbooks’ Data into One Workbook Using VBA</h1>
+        <div class="byline">by Phoebe Yaheng Wu</div>
+        <!-- <div class="topic">Data</div> -->
+      </div>
+      
+    
+      
+      <!-- Article text -->
+      <!-- <a class="named_anchor" name="2549202418499648455"></a> -->
+      <div id="article">
+        <div id="content">
+          <p>Suppose you need to combine many different Excel workbooks’ data into one workbook so that you can analyze the combined data. For example, in some situations, data from different years are separately stored in different Excel workbooks, like the <a href="https://www.kaggle.com/unsdsn/world-happiness" target="_blank">2015 to 2019 World Happiness</a> data from Kaggle. In this case, each year’s data is stored in a separate Excel workbook. It would be convenient to automatically open all Excel workbooks and copy the data into one workbook using just one click. VBA can help with that.</p>
+ 
+          <div class="row justify-content-center"><img class="slideSample" src="https://cdn.glitch.me/0978324c-6aef-4ed1-bd66-25e84a4423ea%2F2.PNG?v=1637295353408"/></div>
+
+          <p>In order to combine multiple workbooks into one, you should begin by opening the VBA editor. On the “Developer” tab located on the top ribbon of Excel, you can find “Visual Basic.” Once you click “Visual Basic,” there will be a drop-down menu on the top left of the new screen where you can find “Module.” Once you click this, it opens the VBA editor. Alternatively, you can press “Alt + F11” to open the VBA editor. Then, write the following code in the VBA editor:</p>
+ 
+  
+ 
+<pre>
+Sub MasterData()
+
+<span>'Declare variables in different data types</span>
+Dim strFolder As String
+Dim strFileSpec As String
+Dim counter As Integer
+  
+<span>'Specify the folder path where we saved all files</span>
+strFolder = "C:\Users\wuyah\Desktop\MutipleFilesToMasterFile\"
+  
+<span>'Specify all files that have the word "Happiness" in the name</span>
+strFileSpec = strFolder & "*Happiness*" & ".csv"
+  
+<span>'Retrieve the first file inside the folder, which, in our case, is "2015 World Happiness Report.csv"</span>
+strFilename = Dir(strFileSpec)
+  
+<span>'Turn off screen updating</span>
+Application.ScreenUpdating = False
+  
+<span>'We set counter as 1</span>
+counter = 1
+  
+<span>'Loop through each file as long as the length of the file name is greater than 0</span>
+Do While Len(strFilename) > 0
+  
+<span>'Open the file</span>
+Workbooks.Open (strFolder & strFilename) 
+  
+<span>'Activate the cell A2 in the opened file</span>
+Range("A2").Activate
+  
+<span>'Get the last row number</span> 
+numRows = Range("A:A").Cells.SpecialCells(xlCellTypeConstants).Count
+  
+If counter <= 1 Then
+
+<span>'Copy the range including header from A1 to the last row number of column I</span>
+Range(Cells(1, "A"), Cells(numRows, "I")).Copy
+  
+<span>'Activate the "Master Data" workbook</span>
+Workbooks("Master Data.xlsm").Activate
+  
+<span>'Activate cell A1</span>
+Cells(Rows.Count, "A").End(xlUp).Activate
+  
+<span>'Otherwise, if the counter is greater than 1, it means we are looping the second file</span>
+Else
+  
+<span>'Since we already copied the header in the first loop, we would only need to copy from "A2 to the last row number of column I"</span>
+Range(Cells(2, "A"), Cells(numRows, "I")).Copy
+  
+<span>'Activate the "Master Data" workbook</span>
+Workbooks("Master Data.xlsm").Activate
+  
+<span>'Activate the next row of the last filled row in column A</span>
+Cells(Rows.Count, "A").End(xlUp).Offset(1, 0).Activate
+ 
+End If
+  
+<span>'Paste data as value</span>
+ActiveCell.PasteSpecial (xlPasteValues)
+  
+<span>'Get the next file</span>
+strFilename = Dir()
+  
+<span>'Increment the counter</span>
+counter = counter + 1
+  
+<span>'Back to while loop</span>
+Loop
+  
+<span>'After all loops, turn on screen updating</span>
+Application.ScreenUpdating = True
+  
+<span>'Activate the "Master Data" workbook</span>
+Workbooks("Master Data.xlsm").Activate
+  
+<span>'Auto-adjust the column width</span>
+Range("A:I").EntireColumn.AutoFit
+  
+<span>'Make header font bold</span>
+Range("A1:I1").Font.Bold = True
+  
+<span>'Activate cell A1</span>
+Range("A1").Activate
+  
+End Sub
+</pre>
+
+<p>The result of the code above looks like this:</p>
+    
+
+<div class="row justify-content-center"><img class="slideSample" src="https://cdn.glitch.me/0978324c-6aef-4ed1-bd66-25e84a4423ea%2FVBA%20master%20file.gif?v=1637297290827"/></div>
+
+<p>The code above is useful in many situations where combining data from multiple Excel workbooks is necessary. This will not only help you be more productive, but it will also come in handy for your entire team.</p>
+
+</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="page-footer font-small blue pt-4">
+  
+      <!-- Copyright -->
+      <div class="footer-copyright text-center py-3">
+        
+        <div id="disqus_thread"></div>
+      </div>
+      <!-- Copyright -->
+    
+    </footer>
+    <!-- Footer -->
+    
+    </div>
+
+
+
+    <!-- Scripts --> 
+
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/prettify.js"></script>
+    <!-- Script for pocket button -->
+    <script type="text/javascript">!function(d,i){if(!d.getElementById(i)){var j=d.createElement("script");j.id=i;j.src="https://widgets.getpocket.com/v1/j/btn.js?v=1";var w=d.getElementById(i);d.body.appendChild(j);}}(document,"pocket-btn-js");</script>
+    <!-- Print friendly -->
+    <script>var pfHeaderImgUrl = '';var pfHeaderTagline = '';var pfdisableClickToDel = 0;var pfHideImages = 0;var pfImageDisplayStyle = 'right';var pfDisablePDF = 0;var pfDisableEmail = 0;var pfDisablePrint = 0;var pfCustomCSS = '';var pfBtVersion='1';(function(){var js, pf;pf = document.createElement('script');pf.type = 'text/javascript';if ('https:' === document.location.protocol){js='https://pf-cdn.printfriendly.com/ssl/main.js'}else{js='http://cdn.printfriendly.com/printfriendly.js'}pf.src=js;document.getElementsByTagName('head')[0].appendChild(pf)})();</script>
+    <!-- Share button / http://sharebutton.co
+    <script src="https://cdn.rawgit.com/carrot/share-button/master/src/share-button.js"></script>-->
+
+
+    <script>
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://wuyaheng.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</body>
+</html>
+
+
